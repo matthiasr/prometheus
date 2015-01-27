@@ -670,6 +670,8 @@ func (p *persistence) getLabelValuesForLabelName(ln clientmodel.LabelName) (clie
 func (p *persistence) persistChunk(fp clientmodel.Fingerprint, c chunk) (int, error) {
 	// 1. Open chunk file.
 	f, err := p.openChunkFileForWriting(fp)
+	fi, _ := f.Stat()
+	glog.Infoln("DEBUG file size before persisting chunk:", fi.Size())
 	if err != nil {
 		return -1, err
 	}
@@ -695,6 +697,7 @@ func (p *persistence) persistChunk(fp clientmodel.Fingerprint, c chunk) (int, er
 	if err != nil {
 		return -1, err
 	}
+	glog.Infoln("DEBUG offset after chunk persisted:", offset)
 	index, err := p.chunkIndexForOffset(offset)
 	if err != nil {
 		return -1, err
