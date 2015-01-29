@@ -11,14 +11,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-all: blob-stamp
+include ../Makefile.INCLUDE
 
-blob-stamp: templates/*
-	$(MAKE) -C blob
-	touch $@
+all: blob/files.go
+
+SUFFIXES:
+
+blob/files.go: $(shell find templates/ static/ -type f)
+	../utility/embed-static.sh static templates | $(GOFMT) > $@
 
 clean:
-	$(MAKE) -C blob clean
-	-rm -f *-stamp
+	-rm -f blob/files.go
 
 .PHONY: clean
